@@ -2,7 +2,7 @@
 
 一個專為電子產品商店設計的 AI 客服聊天機器人，具備無障礙設計與真人客服轉接功能。
 
-🌐 **線上展示：** [點此體驗](https://yuting3344.github.io/techgear-bot/)
+🌐 **線上展示：** [點此體驗](https://chipper-sopapillas-8a97ac.netlify.app/)
 
 ---
 
