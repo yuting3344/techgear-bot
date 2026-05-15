@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TechGear Assistant</title>
+<style>
+:root {
+    --color-bg-primary: #ffffff;
+    --color-bg-secondary: #f5f4ee;
+    --color-bg-tertiary: #faf9f5;
+    --color-bg-info: #e6f1fb;
+    --color-bg-warning: #faeeda;
+    --color-bg-success: #eaf3de;
+    --color-text-primary: #1a1a1a;
+    --color-text-secondary: #6b6b6b;
+    --color-text-tertiary: #999999;
+    --color-text-info: #185fa5;
+    --color-text-warning: #854f0b;
+    --color-text-success: #3b6d11;
+    --color-border-light: rgba(0,0,0,0.1);
+    --color-border-medium: rgba(0,0,0,0.2);
+    --color-border-info: #b5d4f4;
+    --color-border-warning: #fac775;
+    --color-border-success: #c0dd97;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+}
+* { box-sizing: border-box; }
+body {
+    font-family: var(--font-sans);
+    max-width: 720px;
+    margin: 40px auto;
+    padding: 0 20px;
+    background: #f0f0eb;
+    color: var(--color-text-primary);
+}
+h1 { font-size: 22px; font-weight: 500; margin-bottom: 8px; }
+.subtitle { color: var(--color-text-secondary); font-size: 14px; margin-bottom: 24px; }
+button {
+    background: transparent;
+    border: 0.5px solid var(--color-border-medium);
+    border-radius: var(--radius-md);
+    padding: 8px 12px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+}
+button:hover { background: var(--color-bg-secondary); }
+button:active { transform: scale(0.98); }
+input {
+    border: 0.5px solid var(--color-border-medium);
+    border-radius: var(--radius-md);
+    padding: 8px 12px;
+    font-family: inherit;
+    font-size: 15px;
+    outline: none;
+    background: var(--color-bg-primary);
+}
+input:focus { box-shadow: 0 0 0 3px var(--color-bg-info); border-color: var(--color-border-info); }
+#chatbot-root.large-text { font-size: 18px; }
+#chatbot-root.large-text #user-input { font-size: 17px; }
+#chatbot-root.large-text .msg-bubble { font-size: 17px !important; line-height: 1.7 !important; }
+.msg-row { display: flex; gap: 10px; max-width: 88%; }
+.msg-row.bot { align-self: flex-start; }
+.msg-row.user { align-self: flex-end; flex-direction: row-reverse; }
+.msg-avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    flex-shrink: 0; display: flex; align-items: center;
+    justify-content: center; font-size: 18px;
+}
+.msg-bubble { padding: 10px 14px; border-radius: var(--radius-lg); font-size: 15px; line-height: 1.6; }
+.msg-row.bot .msg-bubble { background: var(--color-bg-primary); border: 0.5px solid var(--color-border-light); color: var(--color-text-primary); }
+.msg-row.user .msg-bubble { background: var(--color-bg-info); color: var(--color-text-info); }
+.product-card { background: var(--color-bg-secondary); border-radius: var(--radius-md); padding: 10px 12px; margin-top: 8px; border-left: 3px solid; }
+.typing-dots span { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--color-text-tertiary); margin: 0 2px; animation: dot 1.2s infinite; }
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes dot { 0%, 60%, 100% { opacity: 0.3; } 30% { opacity: 1; } }
+.quick-btn:hover { background: var(--color-bg-info); color: var(--color-text-info); }
+.header-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--color-bg-primary); display: flex;
+    align-items: center; justify-content: center; font-size: 22px;
+}
+</style>
+</head>
+<body>
+
+<h1>TechGear Assistant</h1>
+<p class="subtitle">電子產品客服聊天機器人 · 支援語音朗讀、放大字體、真人轉接</p>
+
+<div id="chatbot-root" style="background: var(--color-bg-primary); border-radius: var(--radius-lg); border: 0.5px solid var(--color-border-light); overflow: hidden;">
+
+<div style="background: var(--color-bg-info); padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; border-bottom: 0.5px solid var(--color-border-light); flex-wrap: wrap; gap: 10px;">
+<div style="display: flex; align-items: center; gap: 12px;">
+    <div class="header-avatar">🤖</div>
+    <div>
+    <p style="font-weight: 500; font-size: 16px; margin: 0; color: var(--color-text-info);">TechGear Assistant</p>
+    <p style="font-size: 13px; margin: 2px 0 0; color: var(--color-text-info); display: flex; align-items: center; gap: 6px;">
+        <span style="width: 8px; height: 8px; border-radius: 50%; background: #1D9E75; display: inline-block;"></span>
+        Online · 隨時為您服務
+    </p>
+    </div>
+</div>
+<div style="display: flex; gap: 8px;">
+    <button id="voice-toggle" aria-label="切換語音朗讀模式" style="padding: 8px 12px; font-size: 13px; display: flex; align-items: center; gap: 6px;">
+    <span style="font-size: 16px;">🔊</span><span id="voice-label">語音關</span>
+    </button>
+    <button id="font-toggle" aria-label="切換放大字體" style="padding: 8px 12px; font-size: 13px; display: flex; align-items: center; gap: 6px;">
+    <span style="font-size: 16px;">🔠</span><span id="font-label">放大字體</span>
+    </button>
+</div>
+</div>
+
+<div id="chat-window" role="log" aria-live="polite" aria-label="聊天訊息" style="height: 420px; overflow-y: auto; padding: 18px; background: var(--color-bg-tertiary); display: flex; flex-direction: column; gap: 14px;"></div>
+
+<div style="padding: 10px 18px; background: var(--color-bg-secondary); border-top: 0.5px solid var(--color-border-light); display: flex; gap: 8px; flex-wrap: wrap;">
+<button class="quick-btn" data-q="你們賣什麼產品" style="font-size: 13px; padding: 6px 12px;">瀏覽產品</button>
+<button class="quick-btn" data-q="推薦一台筆電給我" style="font-size: 13px; padding: 6px 12px;">推薦筆電</button>
+<button class="quick-btn" data-q="退貨政策是什麼" style="font-size: 13px; padding: 6px 12px;">退貨政策</button>
+<button class="quick-btn" data-q="運費多少" style="font-size: 13px; padding: 6px 12px;">運費資訊</button>
+</div>
+
+<div style="padding: 14px 18px; background: var(--color-bg-primary); border-top: 0.5px solid var(--color-border-light); display: flex; gap: 10px; align-items: center;">
+<input id="user-input" type="text" placeholder="請輸入您的問題..." aria-label="輸入訊息" style="flex: 1;" />
+<button id="send-btn" aria-label="送出訊息" style="background: var(--color-bg-info); color: var(--color-text-info); border-color: var(--color-border-info); padding: 8px 18px; font-weight: 500;">
+    <span style="margin-right: 4px;">➤</span>送出
+</button>
+</div>
+
+<div style="padding: 12px 18px; background: var(--color-bg-warning); border-top: 0.5px solid var(--color-border-light); display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;">
+<div style="display: flex; align-items: center; gap: 10px;">
+    <span style="font-size: 22px;">🎧</span>
+    <div>
+    <p style="font-size: 14px; font-weight: 500; margin: 0; color: var(--color-text-warning);">需要真人協助？</p>
+    <p style="font-size: 12px; margin: 2px 0 0; color: var(--color-text-warning);">複雜問題可轉接真人客服</p>
+    </div>
+</div>
+<button id="human-btn" style="background: var(--color-bg-primary); color: var(--color-text-warning); border-color: var(--color-border-warning); padding: 8px 14px; font-size: 13px; font-weight: 500;">
+    轉接真人客服
+</button>
+</div>
+</div>
+
+<script>
+(function() {
+var products = {
+laptop: [
+    { name: 'AeroBook Pro 14', price: '$1,299', desc: '輕薄、18 小時續航，出差工作首選', color: '#185FA5', tag: '熱銷款' },
+    { name: 'PowerStation 16', price: '$1,899', desc: '影像剪輯與遊戲都游刃有餘的工作站', color: '#534AB7', tag: '頂級效能' },
+    { name: 'StudyMate 13', price: '$699', desc: '經濟實惠、穩定可靠，學生最愛', color: '#0F6E56', tag: '預算之選' }
+],
+phone: [
+    { name: 'Lumen X9', price: '$899', desc: '專業相機系統、5G、6.7 吋 OLED 螢幕', color: '#185FA5', tag: '旗艦' },
+    { name: 'Lumen Lite', price: '$399', desc: '高 CP 值、整天續航、介面易上手', color: '#0F6E56', tag: '簡單好用' }
+],
+headphone: [
+    { name: 'QuietWave Pro', price: '$329', desc: '主動降噪、30 小時續航', color: '#534AB7', tag: '頂級款' },
+    { name: 'SoundBuds Air', price: '$149', desc: '無線耳塞、防水、配戴舒適', color: '#185FA5', tag: '人氣款' }
+]
+};
+
+var responses = [
+{ keywords: ['你好', '哈囉', '嗨', 'hello', 'hi'], reply: '您好！歡迎來到 TechGear。我可以協助您挑選產品、回答訂單、運送、退貨等問題。今天想了解什麼呢？' },
+{ keywords: ['產品', '賣什麼', '目錄', '商品'], reply: '我們主要販售三大類：筆電、智慧型手機、耳機。您想看哪一類？直接說「筆電」、「手機」或「耳機」就可以了。' },
+{ keywords: ['筆電', '電腦', 'laptop'], reply: '這是我們的主力筆電。告訴我您的主要用途（工作、遊戲、學生），我可以幫您縮小範圍。', products: products.laptop },
+{ keywords: ['手機', 'phone', '智慧型'], reply: '這是我們的手機產品。X9 適合進階使用者，Lite 簡單好上手又划算。', products: products.phone },
+{ keywords: ['耳機', 'headphone', '耳塞'], reply: '這是我們的音訊產品。告訴我您想要降噪款還是無線耳塞？', products: products.headphone },
+{ keywords: ['推薦', '建議', '哪個好', '挑'], reply: '我很樂意幫您推薦！可以告訴我：(1) 想看哪種產品？(2) 預算與主要用途？例如：「預算一萬以內，大學用的筆電」。' },
+{ keywords: ['學生', '大學', '便宜', '預算', '划算'], reply: '學生族的話，我推薦 StudyMate 13 — 穩定、輕便，只要 $699。需要更多細節嗎？', products: [products.laptop[2]] },
+{ keywords: ['遊戲', '剪輯', '高效能', '快'], reply: '高負載工作的話，PowerStation 16 是最佳選擇。輕鬆應對遊戲和 4K 影像剪輯。', products: [products.laptop[1]] },
+{ keywords: ['退貨', '退款', '退換'], reply: '我們的退貨政策：自送達日起 30 天內可全額退款，商品須維持原狀。退貨免運費，我們會 email 寄送運送標籤給您。' },
+{ keywords: ['運費', '運送', '寄送', '多久'], reply: '標準運送免費，3-5 個工作天送達。快速運送 $15，1-2 個工作天送達。美國 50 州均可寄送。' },
+{ keywords: ['保固', '保修'], reply: '所有 TechGear 產品都附原廠 1 年保固。結帳時可加購 2 年延長保固方案，只要 $49。' },
+{ keywords: ['付款', '信用卡', '分期'], reply: '我們接受 Visa、Mastercard、American Express、PayPal 與 Apple Pay。也可透過 Affirm 享 4 期 0 利率分期。' },
+{ keywords: ['營業', '開放', '幾點'], reply: '線上商店 24 小時營業。真人客服服務時間為週一至週五 9am-6pm（美東時間）。我則是隨時為您服務！' },
+{ keywords: ['追蹤', '訂單', '在哪'], reply: '要追蹤訂單，請提供訂單編號（以 TG- 開頭）。您也可以登入帳戶查看「我的訂單」。要不要轉接真人客服處理訂單問題？' },
+{ keywords: ['謝謝', '感謝', 'thanks'], reply: '不客氣！還有什麼可以幫您的嗎？' },
+{ keywords: ['再見', 'bye', '掰'], reply: '再見！感謝您光臨 TechGear。祝您有美好的一天！' }
+];
+
+var fallback = '不好意思，我不太理解這個問題。我可以協助：產品推薦、退貨政策、運送、付款、保固、訂單追蹤。複雜問題也可以點下方「轉接真人客服」喔。';
+
+var chatWindow = document.getElementById('chat-window');
+var userInput = document.getElementById('user-input');
+var sendBtn = document.getElementById('send-btn');
+var humanBtn = document.getElementById('human-btn');
+var voiceToggle = document.getElementById('voice-toggle');
+var voiceLabel = document.getElementById('voice-label');
+var fontToggle = document.getElementById('font-toggle');
+var fontLabel = document.getElementById('font-label');
+var root = document.getElementById('chatbot-root');
+var voiceOn = false;
+
+function speak(text) {
+if (!voiceOn || !window.speechSynthesis) return;
+window.speechSynthesis.cancel();
+var utter = new SpeechSynthesisUtterance(text);
+utter.lang = 'zh-TW';
+utter.rate = 0.95;
+utter.pitch = 1;
+window.speechSynthesis.speak(utter);
+}
+
+function addMessage(text, who, productList) {
+var row = document.createElement('div');
+row.className = 'msg-row ' + who;
+var avatar = document.createElement('div');
+avatar.className = 'msg-avatar';
+if (who === 'bot') {
+    avatar.style.background = 'var(--color-bg-info)';
+    avatar.textContent = '🤖';
+} else {
+    avatar.style.background = 'var(--color-bg-secondary)';
+    avatar.textContent = '🙂';
+}
+var bubble = document.createElement('div');
+bubble.className = 'msg-bubble';
+bubble.textContent = text;
+if (productList && productList.length) {
+    productList.forEach(function(p) {
+    var card = document.createElement('div');
+    card.className = 'product-card';
+    card.style.borderLeftColor = p.color;
+    card.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;"><span style="font-weight:500;font-size:14px;">' + p.name + '</span><span style="font-weight:500;color:' + p.color + ';font-size:14px;">' + p.price + '</span></div><div style="font-size:13px;color:var(--color-text-secondary);margin-top:4px;">' + p.desc + '</div><div style="display:inline-block;margin-top:6px;font-size:11px;padding:2px 8px;border-radius:10px;background:' + p.color + '20;color:' + p.color + ';font-weight:500;">' + p.tag + '</div>';
+    bubble.appendChild(card);
+    });
+}
+row.appendChild(avatar);
+row.appendChild(bubble);
+chatWindow.appendChild(row);
+chatWindow.scrollTop = chatWindow.scrollHeight;
+if (who === 'bot') speak(text);
+}
+
+function showTyping() {
+var row = document.createElement('div');
+row.className = 'msg-row bot';
+row.id = 'typing-indicator';
+row.innerHTML = '<div class="msg-avatar" style="background: var(--color-bg-info);">🤖</div><div class="msg-bubble"><span class="typing-dots"><span></span><span></span><span></span></span></div>';
+chatWindow.appendChild(row);
+chatWindow.scrollTop = chatWindow.scrollHeight;
+}
+
+function removeTyping() {
+var t = document.getElementById('typing-indicator');
+if (t) t.remove();
+}
+
+function findResponse(text) {
+var lower = text.toLowerCase();
+for (var i = 0; i < responses.length; i++) {
+    var r = responses[i];
+    for (var j = 0; j < r.keywords.length; j++) {
+    if (lower.indexOf(r.keywords[j].toLowerCase()) !== -1) return r;
+    }
+}
+return { reply: fallback };
+}
+
+function handleSend(text) {
+if (!text || !text.trim()) return;
+addMessage(text.trim(), 'user');
+userInput.value = '';
+showTyping();
+setTimeout(function() {
+    removeTyping();
+    var r = findResponse(text);
+    addMessage(r.reply, 'bot', r.products);
+}, 600);
+}
+
+sendBtn.addEventListener('click', function() { handleSend(userInput.value); });
+userInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') handleSend(userInput.value); });
+
+var quickBtns = document.querySelectorAll('.quick-btn');
+for (var i = 0; i < quickBtns.length; i++) {
+(function(btn) {
+    btn.addEventListener('click', function() { handleSend(btn.dataset.q); });
+})(quickBtns[i]);
+}
+
+voiceToggle.addEventListener('click', function() {
+voiceOn = !voiceOn;
+voiceLabel.textContent = voiceOn ? '語音開' : '語音關';
+voiceToggle.style.background = voiceOn ? 'var(--color-bg-success)' : '';
+voiceToggle.style.color = voiceOn ? 'var(--color-text-success)' : '';
+voiceToggle.style.borderColor = voiceOn ? 'var(--color-border-success)' : '';
+if (voiceOn) speak('語音朗讀模式已開啟。');
+else if (window.speechSynthesis) window.speechSynthesis.cancel();
+});
+
+fontToggle.addEventListener('click', function() {
+root.classList.toggle('large-text');
+var large = root.classList.contains('large-text');
+fontLabel.textContent = large ? '一般字體' : '放大字體';
+});
+
+humanBtn.addEventListener('click', function() {
+addMessage('幫我轉接真人客服。', 'user');
+showTyping();
+setTimeout(function() {
+    removeTyping();
+    addMessage('好的，我現在為您轉接真人客服。預估等候時間約 3 分鐘，專員會立刻加入對話。可以先簡述您需要協助的問題嗎？', 'bot');
+}, 700);
+});
+
+setTimeout(function() {
+addMessage('您好！我是 TechGear Assistant。我可以回答產品、運送、退貨、保固相關問題，也能幫您挑選合適的產品。今天想了解什麼呢？', 'bot');
+}, 200);
+})();
+</script>
+
+</body>
+</html>
