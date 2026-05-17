@@ -2,8 +2,8 @@
 # SSH tunnel to remote Ollama server
 # Usage: SSH_USER=ubuntu SSH_HOST=your-server.com bash scripts/tunnel.sh
 #
-# The server must have this public key in ~/.ssh/authorized_keys:
-# ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHE0ylF9V16kp9hOCD2MTlMVR6puEJlbuhVe9F9l+wKI
+# The server must have the public key (stored in SSH_AUTHORIZED_KEY env var)
+# added to ~/.ssh/authorized_keys
 
 SSH_USER="${SSH_USER:?Set SSH_USER to your remote server username}"
 SSH_HOST="${SSH_HOST:?Set SSH_HOST to your remote server hostname or IP}"
