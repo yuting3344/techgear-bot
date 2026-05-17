@@ -971,8 +971,10 @@ export default function Home() {
             style={{
               padding: '8px 16px',
               borderTop: '1.5px solid var(--border)',
-              display: 'flex', gap: 6, flexWrap: 'wrap',
+              display: 'flex', gap: 6, flexWrap: 'nowrap',
+              overflowX: 'auto',
               background: 'var(--bg)',
+              scrollbarWidth: 'none',
             }}
           >
             {QUICK_REPLIES.map(({ label, q }) => (
@@ -985,6 +987,8 @@ export default function Home() {
                   border: '1.5px solid var(--border)',
                   background: 'transparent',
                   color: 'var(--text-secondary)',
+                  whiteSpace: 'nowrap',
+                  flexShrink: 0,
                 }}
                 onMouseEnter={(e) => {
                   ;(e.currentTarget as HTMLButtonElement).style.background = 'var(--bg-tertiary)'
