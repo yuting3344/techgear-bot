@@ -1,8 +1,8 @@
 import { NextRequest } from 'next/server'
 import { laptops } from '@/lib/products'
 
-const OLLAMA_BASE_URL = process.env.OLLAMA_BASE_URL ?? 'http://localhost:11434'
-const OLLAMA_MODEL = process.env.OLLAMA_MODEL ?? 'gemma4:31b-cloud'
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY
+const GEMINI_MODEL = process.env.GEMINI_MODEL ?? 'gemini-3-flash-preview'
 
 const SYSTEM_PROMPT = `你是 TechGear Assistant，一家銷售筆記型電腦的電子產品商店客服機器人。
 
@@ -24,44 +24,55 @@ ${laptops.map((l) => `- ${l.name}（${l.brand}）：${l.price}，${l.description
 付款：Visa、Mastercard、American Express、PayPal、Line Pay，可分 0 利率 12 期。`
 
 export async function POST(req: NextRequest) {
-  const { messages } = await req.json()
-
-  const ollamaMessages = [
-    { role: 'system', content: SYSTEM_PROMPT },
-    ...messages,
-  ]
-
-  let ollamaRes: Response
-  try {
-    ollamaRes = await fetch(`${OLLAMA_BASE_URL}/api/chat`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: OLLAMA_MODEL,
-        messages: ollamaMessages,
-        stream: true,
-      }),
-    })
-  } catch {
+  if (!GEMINI_API_KEY) {
     return new Response(
-      JSON.stringify({ error: 'Ollama 服務無法連線，請確認伺服器與 SSH tunnel 已啟動。' }),
+      JSON.stringify({ error: '未設定 GEMINI_API_KEY 環境變數' }),
       { status: 503, headers: { 'Content-Type': 'application/json' } }
     )
   }
 
-  if (!ollamaRes.ok) {
-    const text = await ollamaRes.text()
-    return new Response(JSON.stringify({ error: text }), {
-      status: ollamaRes.status,
+  const { messages } = await req.json()
+
+  // Convert messages to Gemini format
+  const contents = messages.map((m: { role: string; content: string }) => ({
+    role: m.role === 'assistant' ? 'model' : 'user',
+    parts: [{ text: m.content }],
+  }))
+
+  let res: Response
+  try {
+    res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:streamGenerateContent?alt=sse&key=${GEMINI_API_KEY}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+          contents,
+          generationConfig: { maxOutputTokens: 1024, temperature: 0.7 },
+        }),
+      }
+    )
+  } catch {
+    return new Response(
+      JSON.stringify({ error: 'Gemini API 無法連線，請確認網路狀態。' }),
+      { status: 503, headers: { 'Content-Type': 'application/json' } }
+    )
+  }
+
+  if (!res.ok) {
+    const err = await res.text()
+    return new Response(JSON.stringify({ error: err }), {
+      status: res.status,
       headers: { 'Content-Type': 'application/json' },
     })
   }
 
-  // Stream Ollama's NDJSON response, extracting just the text tokens
+  // Stream SSE → plain text tokens
   const encoder = new TextEncoder()
   const readable = new ReadableStream({
     async start(controller) {
-      const reader = ollamaRes.body!.getReader()
+      const reader = res.body!.getReader()
       const decoder = new TextDecoder()
       try {
         while (true) {
@@ -69,17 +80,18 @@ export async function POST(req: NextRequest) {
           if (done) break
           const chunk = decoder.decode(value, { stream: true })
           for (const line of chunk.split('\n')) {
-            if (!line.trim()) continue
+            if (!line.startsWith('data: ')) continue
+            const data = line.slice(6).trim()
+            if (data === '[DONE]') { controller.close(); return }
             try {
-              const json = JSON.parse(line)
-              const token: string = json?.message?.content ?? ''
+              const json = JSON.parse(data)
+              const token: string =
+                json?.candidates?.[0]?.content?.parts?.[0]?.text ?? ''
               if (token) controller.enqueue(encoder.encode(token))
-              if (json?.done) { controller.close(); return }
-            } catch {
-              // skip malformed lines
-            }
+            } catch { /* skip malformed */ }
           }
         }
+        controller.close()
       } catch (err) {
         controller.error(err)
       } finally {
@@ -92,7 +104,6 @@ export async function POST(req: NextRequest) {
     headers: {
       'Content-Type': 'text/plain; charset=utf-8',
       'Transfer-Encoding': 'chunked',
-      'X-Content-Type-Options': 'nosniff',
     },
   })
 }
