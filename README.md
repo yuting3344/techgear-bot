@@ -1,141 +1,78 @@
-# TechGear Assistant 🤖
+# TechGear Assistant
 
-一個專為電子產品商店設計的 AI 客服聊天機器人，具備無障礙設計與真人客服轉接功能。
-
-🌐 **線上展示：** [點此體驗](https://chipper-sopapillas-8a97ac.netlify.app/)
+筆電選購 AI 客服聊天機器人，使用 Next.js + Ollama 驅動。
 
 ---
 
-## ✨ 功能特色
+## 功能
 
-### 四大核心功能
-
-1. **🎨 簡單易用的使用者體驗**
-   - 高對比色塊分區（藍色頁首、白色對話區、黃色客服列）
-   - 清晰的字型層級與按鈕引導
-   - 響應式設計，手機桌機都好用
-
-2. **🔊 語音朗讀模式**
-   - 一鍵切換 Web Speech API 中文語音
-   - 專為視障與年長使用者設計
-   - 機器人回覆會自動朗讀
-
-3. **🔠 放大字體模式**
-   - 一鍵切換 18px 加大模式
-   - 低視能使用者友善
-
-4. **🎧 真人客服轉接**
-   - 醒目按鈕，一鍵升級複雜問題
-   - 顯示預估等候時間
-
-### 智慧問答
-
-- 16 種常見問題自動回應
-- 9 款產品（筆電、手機、耳機）智慧推薦
-- 根據預算與用途給予客製化建議
-- 快速回覆按鈕，新手也能輕鬆上手
+- Ollama 串流對話（支援任意本地或遠端模型）
+- 真實筆電商品圖（本地圖片，無外部依賴）
+- 黑白灰簡潔介面，無 emoji
+- 語音朗讀（Web Speech API）、放大字體
+- 真人客服轉接表單 + Email 通知
 
 ---
 
-## 🛠️ 技術架構
+## 快速開始
 
-| 項目 | 使用技術 |
-|------|---------|
-| 前端 | 純 HTML / CSS / JavaScript（零依賴） |
-| 語音 | Web Speech API（瀏覽器原生） |
-| 部署 | Netlify / GitHub Pages |
-| 設計系統 | CSS 變數，支援自訂主題 |
+### 1. 安裝依賴
 
-**單檔運作** — 整個聊天機器人只有一個 `index.html`，沒有任何外部 CDN 或套件依賴，可離線執行。
-
----
-
-## 🚀 快速開始
-
-### 線上體驗
-直接打開 [線上展示連結](https://yuting3344.github.io/techgear-bot/)。
-
-### 本機執行
 ```bash
-git clone https://github.com/yuting3344/techgear-bot.git
-cd techgear-bot
-open index.html
+npm install
+```
+
+### 2. 設定環境變數
+
+```bash
+cp .env.local.example .env.local
+# 填入所有必要變數（見下方說明）
+```
+
+### 3. 連線遠端 Ollama 伺服器（SSH tunnel）
+
+伺服器端需在 `~/.ssh/authorized_keys` 加入 `SSH_AUTHORIZED_KEY` 環境變數所設定的公鑰。
+
+本機執行 tunnel：
+
+```bash
+SSH_USER=ubuntu SSH_HOST=your-server.com SSH_KEY=~/.ssh/id_ed25519 npm run tunnel
+```
+
+tunnel 啟動後，Ollama 預設會映射到 `localhost:11434`。
+
+### 4. 啟動開發伺服器
+
+```bash
+npm run dev
+# 開啟 http://localhost:3000
 ```
 
 ---
 
-## 🎨 設計邏輯
+## 環境變數
 
-### 提示詞設計（Prompt Design）
-
-未來接入 LLM 後端時的系統提示詞：
-
-```
-你是 TechGear Assistant，一家販售筆電、智慧型手機與耳機的
-電子產品商店的友善客服聊天機器人。
-
-目標：
-- 回答關於運送、退貨、保固與付款的常見問題
-- 根據使用者的預算與使用情境推薦產品
-- 將複雜問題升級轉接給真人客服
-
-風格：
-- 溫暖、口語化，短句，不使用術語
-- 收集資訊時一次只問一個問題
-- 推薦前先確認，先詢問預算與使用情境
-
-限制：
-- 絕不捏造目錄外的產品、價格或政策
-- 不確定時主動說明，提供「轉接真人客服」選項
-- 除了列出產品外，回覆控制在 60 字以內
-```
-
-### 成功標準
-
-- ✅ 一秒內回應 16 項常見 FAQ
-- ✅ 推薦前先了解預算與用途
-- ✅ 語音朗讀清晰流暢
-- ✅ 一鍵轉接真人客服
-- ✅ 放大字體模式可讀性佳
-
-### 輸入輸出範例
-
-**範例 1：產品推薦**
-
-> 👤 我需要一台筆電給剛上大學的女兒，預算約 700 美元
->
-> 🤖 學生族的話，我推薦 StudyMate 13 — 穩定、輕便，只要 $699。需要更多細節嗎？
-
-**範例 2：政策詢問**
-
-> 👤 我可以在 45 天後退貨嗎？
->
-> 🤖 我們的退貨政策：自送達日起 30 天內可全額退款，商品須維持原狀⋯⋯
+| 變數 | 說明 |
+|------|------|
+| `OLLAMA_BASE_URL` | Ollama API 位址（預設 `http://localhost:11434`） |
+| `OLLAMA_MODEL` | 使用的模型名稱（預設 `gemma4:31b-cloud`） |
+| `SSH_AUTHORIZED_KEY` | 伺服器 authorized_keys 使用的 SSH 公鑰 |
+| `SMTP_HOST` | SMTP 伺服器（預設 `smtp.gmail.com`） |
+| `SMTP_PORT` | SMTP 埠（預設 `587`） |
+| `SMTP_USER` | 寄件 Gmail 帳號 |
+| `SMTP_PASS` | Gmail App Password |
 
 ---
 
-## 📋 未來改進方向
+## 技術架構
 
-1. **真實 LLM 整合** — 串接 Anthropic Claude API，理解語意而非關鍵字
-2. **對話記憶** — 保存多輪對話脈絡
-3. **更好的 TTS** — 改用 ElevenLabs 或 Google WaveNet，提升語音品質
-4. **真人客服後端** — 串接 Intercom 或 Zendesk
-5. **多語系支援** — 自動偵測使用者語言
-
----
-
-## 🤔 為什麼選擇 Claude + Vibe Coding？
-
-- **一次到位的無障礙設計** — 色彩對比、ARIA 標籤、Web Speech API 一次寫對
-- **即時的回饋迴圈** — 從「描述需求」到「實際使用」只要幾秒鐘
-- **前後端統一** — 同一個模型可寫前端 UI 也可驅動後端 API
+| 層級 | 技術 |
+|------|------|
+| 前端 | Next.js 14 App Router + TypeScript |
+| 後端 | Next.js API Route（串流代理） |
+| AI | Ollama（本地或 SSH tunnel 遠端） |
+| 部署 | Netlify + @netlify/plugin-nextjs |
 
 ---
 
-## 📄 授權
-
-MIT License
-
----
-
-**Made with ❤️ by yuting3344**
+**Made with Claude Code**
