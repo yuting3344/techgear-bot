@@ -552,14 +552,14 @@ function ContextCard({
     return (
       <div
         style={{
-          padding: '8px 20px',
+          padding: '7px 16px',
           borderTop: '1.5px solid var(--border)',
           background: 'var(--bg)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
           gap: 8,
-          minHeight: 40,
+          minHeight: 36,
         }}
       >
         <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>
@@ -594,12 +594,12 @@ function ContextCard({
   return (
     <div
       style={{
-        padding: '12px 20px',
+        padding: '10px 16px',
         borderTop: '1.5px solid var(--border)',
         background: 'var(--bg)',
         display: 'flex',
         flexDirection: 'column',
-        gap: 10,
+        gap: 8,
       }}
     >
       <p style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 2 }}>
@@ -808,18 +808,18 @@ export default function Home() {
     }, 400)
   }
 
-  const fs = largeText ? 17 : 15
+  const fs = largeText ? 15 : 13
 
   return (
     <>
       {/* Page wrapper */}
-      <div style={{ width: '100%', maxWidth: 720 }}>
+      <div style={{ width: '100%', maxWidth: 580 }}>
         {/* Header above chat */}
-        <div style={{ marginBottom: 16, textAlign: 'center' }}>
-          <h1 style={{ fontSize: 22, fontWeight: 700, letterSpacing: '-0.3px' }}>
+        <div style={{ marginBottom: 12, textAlign: 'center' }}>
+          <h1 style={{ fontSize: 18, fontWeight: 700, letterSpacing: '-0.3px' }}>
             TechGear Assistant
           </h1>
-          <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 4 }}>
+          <p style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 3 }}>
             筆電選購客服
           </p>
         </div>
@@ -837,37 +837,37 @@ export default function Home() {
           {/* Chat header */}
           <div
             style={{
-              padding: '14px 20px',
+              padding: '11px 16px',
               borderBottom: '1.5px solid var(--border)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
               flexWrap: 'wrap',
-              gap: 10,
+              gap: 8,
               background: 'var(--bg)',
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <div
                 style={{
-                  width: 36, height: 36, borderRadius: '50%',
+                  width: 30, height: 30, borderRadius: '50%',
                   background: 'var(--bg-tertiary)',
                   border: '1.5px solid var(--border)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 16, fontWeight: 700,
+                  fontSize: 13, fontWeight: 700,
                 }}
               >
                 TG
               </div>
               <div>
-                <p style={{ fontWeight: 600, fontSize: 14 }}>TechGear Assistant</p>
-                <p style={{ fontSize: 12, color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: 5, marginTop: 1 }}>
-                  <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#22c55e', display: 'inline-block' }} />
+                <p style={{ fontWeight: 600, fontSize: 13 }}>TechGear Assistant</p>
+                <p style={{ fontSize: 11, color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: 4, marginTop: 1 }}>
+                  <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#22c55e', display: 'inline-block' }} />
                   Online
                 </p>
               </div>
             </div>
-            <div style={{ display: 'flex', gap: 8 }}>
+            <div style={{ display: 'flex', gap: 6 }}>
               <button
                 onClick={() => {
                   const next = !voiceOn
@@ -875,7 +875,7 @@ export default function Home() {
                   if (!next) window.speechSynthesis?.cancel()
                 }}
                 style={{
-                  padding: '6px 12px', fontSize: 12,
+                  padding: '5px 10px', fontSize: 11,
                   border: '1.5px solid var(--border)',
                   background: voiceOn ? 'var(--accent)' : 'transparent',
                   color: voiceOn ? '#fff' : 'var(--text-primary)',
@@ -886,7 +886,7 @@ export default function Home() {
               <button
                 onClick={() => setLargeText((v) => !v)}
                 style={{
-                  padding: '6px 12px', fontSize: 12,
+                  padding: '5px 10px', fontSize: 11,
                   border: '1.5px solid var(--border)',
                   background: largeText ? 'var(--accent)' : 'transparent',
                   color: largeText ? '#fff' : 'var(--text-primary)',
@@ -903,13 +903,13 @@ export default function Home() {
             role="log"
             aria-live="polite"
             style={{
-              height: 460,
+              height: 370,
               overflowY: 'auto',
-              padding: '20px 20px',
+              padding: '16px',
               background: 'var(--bg-secondary)',
               display: 'flex',
               flexDirection: 'column',
-              gap: 14,
+              gap: 10,
               fontSize: fs,
             }}
           >
@@ -967,9 +967,9 @@ export default function Home() {
           {/* Quick replies */}
           <div
             style={{
-              padding: '10px 20px',
+              padding: '8px 16px',
               borderTop: '1.5px solid var(--border)',
-              display: 'flex', gap: 8, flexWrap: 'wrap',
+              display: 'flex', gap: 6, flexWrap: 'wrap',
               background: 'var(--bg)',
             }}
           >
@@ -1004,9 +1004,9 @@ export default function Home() {
           {/* Input row */}
           <div
             style={{
-              padding: '12px 20px',
+              padding: '10px 16px',
               borderTop: '1.5px solid var(--border)',
-              display: 'flex', gap: 10, alignItems: 'center',
+              display: 'flex', gap: 8, alignItems: 'center',
               background: 'var(--bg)',
             }}
           >
@@ -1038,23 +1038,23 @@ export default function Home() {
           {/* Human agent bar */}
           <div
             style={{
-              padding: '12px 20px',
+              padding: '10px 16px',
               borderTop: '1.5px solid var(--border)',
               background: 'var(--bg-secondary)',
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              gap: 10, flexWrap: 'wrap',
+              gap: 8, flexWrap: 'wrap',
             }}
           >
             <div>
-              <p style={{ fontSize: 13, fontWeight: 600 }}>需要真人協助？</p>
-              <p style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2 }}>
+              <p style={{ fontSize: 12, fontWeight: 600 }}>需要真人協助？</p>
+              <p style={{ fontSize: 11, color: 'var(--text-secondary)', marginTop: 2 }}>
                 複雜問題可轉接真人客服
               </p>
             </div>
             <button
               onClick={() => setAgentOpen(true)}
               style={{
-                padding: '8px 18px', fontSize: 13, fontWeight: 600,
+                padding: '7px 14px', fontSize: 12, fontWeight: 600,
                 border: '1.5px solid var(--accent)',
                 background: 'transparent',
                 color: 'var(--accent)',
