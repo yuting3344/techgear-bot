@@ -63,7 +63,7 @@ export const laptops: Laptop[] = [
     description: 'RTX 4060 獨顯，13 代 i7，適合影像剪輯、3D 設計與重度辦公需求。',
     amazonUrl: 'https://www.amazon.com/dp/B0CC2566C5',
     amazonAsin: 'B0CC2566C5',
-    imageUrl: '',
+    imageUrl: '/images/dell-xps-15.jpg',
   },
   {
     id: 'lenovo-thinkpad-x1-carbon',
@@ -127,7 +127,7 @@ export const laptops: Laptop[] = [
     description: '3K+ 觸控螢幕，可 360 度翻轉，附 OMEN Stylus 手寫筆，兼顧創作與商務。',
     amazonUrl: 'https://www.amazon.com/dp/B0BFBJYLB5',
     amazonAsin: 'B0BFBJYLB5',
-    imageUrl: '',
+    imageUrl: '/images/hp-spectre-x360.jpg',
   },
 ]
 
