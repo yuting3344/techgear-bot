@@ -118,14 +118,14 @@ function ProductCard({ laptop }: { laptop: Laptop }) {
             gap: 8,
           }}
         >
-          <span style={{ fontWeight: 600, fontSize: 14 }}>{laptop.name}</span>
-          <span style={{ fontWeight: 700, fontSize: 15, whiteSpace: 'nowrap' }}>
+          <span style={{ fontWeight: 600, fontSize: '1.08em' }}>{laptop.name}</span>
+          <span style={{ fontWeight: 700, fontSize: '1.15em', whiteSpace: 'nowrap' }}>
             {laptop.price}
           </span>
         </div>
         <p
           style={{
-            fontSize: 12,
+            fontSize: '0.92em',
             color: 'var(--text-secondary)',
             marginTop: 4,
             lineHeight: 1.5,
@@ -146,7 +146,7 @@ function ProductCard({ laptop }: { laptop: Laptop }) {
             <span
               key={tag}
               style={{
-                fontSize: 11,
+                fontSize: '0.85em',
                 padding: '2px 8px',
                 borderRadius: 100,
                 background: 'var(--bg-tertiary)',
@@ -160,7 +160,7 @@ function ProductCard({ laptop }: { laptop: Laptop }) {
           <span
             style={{
               marginLeft: 'auto',
-              fontSize: 11,
+              fontSize: '0.85em',
               color: 'var(--text-tertiary)',
               fontWeight: 500,
             }}
@@ -174,7 +174,7 @@ function ProductCard({ laptop }: { laptop: Laptop }) {
             padding: '8px 10px',
             background: 'var(--bg-secondary)',
             borderRadius: 'var(--radius-sm)',
-            fontSize: 11,
+            fontSize: '0.85em',
             color: 'var(--text-secondary)',
             lineHeight: 1.6,
           }}
@@ -562,7 +562,7 @@ function ContextCard({
           minHeight: 36,
         }}
       >
-        <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>
+        <span style={{ fontSize: '0.92em', color: 'var(--text-secondary)' }}>
           {hasContent ? (
             <>
               <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>目前需求：</span>
@@ -577,7 +577,7 @@ function ContextCard({
         <button
           onClick={() => { setDraft(ctx); setExpanded(true) }}
           style={{
-            fontSize: 11,
+            fontSize: '0.85em',
             padding: '3px 10px',
             border: '1.5px solid var(--border)',
             background: 'transparent',
@@ -602,12 +602,12 @@ function ContextCard({
         gap: 8,
       }}
     >
-      <p style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 2 }}>
+      <p style={{ fontSize: '0.92em', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 2 }}>
         目前需求
       </p>
       <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
         <div style={{ flex: 1, minWidth: 120 }}>
-          <label style={{ display: 'block', fontSize: 11, color: 'var(--text-tertiary)', marginBottom: 4 }}>
+          <label style={{ display: 'block', fontSize: '0.85em', color: 'var(--text-tertiary)', marginBottom: 4 }}>
             預算
           </label>
           <input
@@ -615,11 +615,11 @@ function ContextCard({
             value={draft.budget}
             onChange={(e) => setDraft((d) => ({ ...d, budget: e.target.value }))}
             placeholder="例：NT$30,000"
-            style={{ width: '100%', fontSize: 13 }}
+            style={{ width: '100%', fontSize: '1em' }}
           />
         </div>
         <div style={{ flex: 1, minWidth: 120 }}>
-          <label style={{ display: 'block', fontSize: 11, color: 'var(--text-tertiary)', marginBottom: 4 }}>
+          <label style={{ display: 'block', fontSize: '0.85em', color: 'var(--text-tertiary)', marginBottom: 4 }}>
             用途
           </label>
           <input
@@ -627,20 +627,20 @@ function ContextCard({
             value={draft.useCase}
             onChange={(e) => setDraft((d) => ({ ...d, useCase: e.target.value }))}
             placeholder="例：遊戲、剪片、學生"
-            style={{ width: '100%', fontSize: 13 }}
+            style={{ width: '100%', fontSize: '1em' }}
           />
         </div>
       </div>
       <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
         <button
           onClick={() => setExpanded(false)}
-          style={{ fontSize: 12, padding: '4px 14px', border: '1.5px solid var(--border)', background: 'transparent' }}
+          style={{ fontSize: '0.92em', padding: '4px 14px', border: '1.5px solid var(--border)', background: 'transparent' }}
         >
           取消
         </button>
         <button
           onClick={save}
-          style={{ fontSize: 12, padding: '4px 14px', background: 'var(--accent)', color: '#fff', border: 'none', fontWeight: 600 }}
+          style={{ fontSize: '0.92em', padding: '4px 14px', background: 'var(--accent)', color: '#fff', border: 'none', fontWeight: 600 }}
         >
           儲存
         </button>
@@ -809,17 +809,19 @@ export default function Home() {
   }
 
   const fs = largeText ? 15 : 13
+  // Scale any hardcoded font size proportionally with largeText
+  const f = (n: number) => largeText ? Math.round(n * 15 / 13) : n
 
   return (
     <>
-      {/* Page wrapper */}
-      <div style={{ width: '100%', maxWidth: 580 }}>
+      {/* Page wrapper — fontSize: fs here cascades to ALL children */}
+      <div style={{ width: '100%', maxWidth: 580, fontSize: fs }}>
         {/* Header above chat */}
         <div style={{ marginBottom: 12, textAlign: 'center' }}>
-          <h1 style={{ fontSize: 18, fontWeight: 700, letterSpacing: '-0.3px' }}>
+          <h1 style={{ fontSize: '1.38em', fontWeight: 700, letterSpacing: '-0.3px' }}>
             TechGear Assistant
           </h1>
-          <p style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 3 }}>
+          <p style={{ fontSize: '0.92em', color: 'var(--text-secondary)', marginTop: 3 }}>
             筆電選購客服
           </p>
         </div>
@@ -854,14 +856,14 @@ export default function Home() {
                   background: 'var(--bg-tertiary)',
                   border: '1.5px solid var(--border)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 13, fontWeight: 700,
+                  fontSize: '1em', fontWeight: 700,
                 }}
               >
                 TG
               </div>
               <div>
-                <p style={{ fontWeight: 600, fontSize: 13 }}>TechGear Assistant</p>
-                <p style={{ fontSize: 11, color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: 4, marginTop: 1 }}>
+                <p style={{ fontWeight: 600, fontSize: '1em' }}>TechGear Assistant</p>
+                <p style={{ fontSize: '0.85em', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: 4, marginTop: 1 }}>
                   <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#22c55e', display: 'inline-block' }} />
                   Online
                 </p>
@@ -875,7 +877,7 @@ export default function Home() {
                   if (!next) window.speechSynthesis?.cancel()
                 }}
                 style={{
-                  padding: '5px 10px', fontSize: 11,
+                  padding: '5px 10px', fontSize: '0.85em',
                   border: '1.5px solid var(--border)',
                   background: voiceOn ? 'var(--accent)' : 'transparent',
                   color: voiceOn ? '#fff' : 'var(--text-primary)',
@@ -886,7 +888,7 @@ export default function Home() {
               <button
                 onClick={() => setLargeText((v) => !v)}
                 style={{
-                  padding: '5px 10px', fontSize: 11,
+                  padding: '5px 10px', fontSize: '0.85em',
                   border: '1.5px solid var(--border)',
                   background: largeText ? 'var(--accent)' : 'transparent',
                   color: largeText ? '#fff' : 'var(--text-primary)',
@@ -931,7 +933,7 @@ export default function Home() {
                     background: 'var(--bg-tertiary)',
                     border: '1.5px solid var(--border)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: 11, fontWeight: 700, flexShrink: 0, color: 'var(--text-secondary)',
+                    fontSize: '0.85em', fontWeight: 700, flexShrink: 0, color: 'var(--text-secondary)',
                   }}
                 >
                   {msg.role === 'user' ? 'You' : 'TG'}
@@ -979,7 +981,7 @@ export default function Home() {
                 onClick={() => handleSend(q)}
                 disabled={loading}
                 style={{
-                  fontSize: 12, padding: '5px 12px',
+                  fontSize: '0.92em', padding: '5px 12px',
                   border: '1.5px solid var(--border)',
                   background: 'transparent',
                   color: 'var(--text-secondary)',
@@ -1027,7 +1029,7 @@ export default function Home() {
                 background: loading || !input.trim() ? 'var(--bg-tertiary)' : 'var(--accent)',
                 color: loading || !input.trim() ? 'var(--text-tertiary)' : '#fff',
                 border: 'none',
-                fontWeight: 600, fontSize: 14,
+                fontWeight: 600, fontSize: '1.08em',
                 borderRadius: 'var(--radius-sm)',
               }}
             >
@@ -1046,15 +1048,15 @@ export default function Home() {
             }}
           >
             <div>
-              <p style={{ fontSize: 12, fontWeight: 600 }}>需要真人協助？</p>
-              <p style={{ fontSize: 11, color: 'var(--text-secondary)', marginTop: 2 }}>
+              <p style={{ fontSize: '0.92em', fontWeight: 600 }}>需要真人協助？</p>
+              <p style={{ fontSize: '0.85em', color: 'var(--text-secondary)', marginTop: 2 }}>
                 複雜問題可轉接真人客服
               </p>
             </div>
             <button
               onClick={() => setAgentOpen(true)}
               style={{
-                padding: '7px 14px', fontSize: 12, fontWeight: 600,
+                padding: '7px 14px', fontSize: '0.92em', fontWeight: 600,
                 border: '1.5px solid var(--accent)',
                 background: 'transparent',
                 color: 'var(--accent)',
