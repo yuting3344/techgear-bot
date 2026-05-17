@@ -491,6 +491,164 @@ function WaitingModal({
   )
 }
 
+// ── User Context (needs card) ──────────────────────────────────────────────
+
+interface UserContext {
+  budget: string
+  useCase: string
+}
+
+const USE_CASE_MAP: [string[], string][] = [
+  [['剪片', '影片', '剪輯', '影像', 'video', 'premiere', 'davinci'], '影像剪輯'],
+  [['遊戲', 'gaming', 'game', 'rog', 'fps', '電競'], '遊戲'],
+  [['學生', '學校', '寫作業', '讀書', '上課'], '學生用途'],
+  [['商務', '辦公', '出差', 'office', 'excel', 'word'], '商務辦公'],
+  [['創作', '設計', '繪圖', 'photoshop', 'illustrator', 'figma'], '設計創作'],
+  [['程式', '開發', 'coding', 'developer', 'vscode', 'xcode'], '程式開發'],
+]
+
+function detectBudget(text: string): string | null {
+  // 3萬 / 三萬 / NT$30,000 / $30000 / 30000元
+  const m =
+    text.match(/(\d+)\s*萬/) ||
+    text.match(/NT\$?\s*([\d,]+)/) ||
+    text.match(/\$\s*([\d,]+)/) ||
+    text.match(/([\d,]+)\s*元/) ||
+    text.match(/([\d]{4,6})/)
+  if (!m) return null
+  const raw = m[1].replace(/,/g, '')
+  const num = Number(raw)
+  if (num < 100) return `NT$${num}萬`
+  if (num >= 1000 && num <= 999999) return `NT$${num.toLocaleString()}`
+  return null
+}
+
+function detectUseCase(text: string): string | null {
+  const lower = text.toLowerCase()
+  for (const [keywords, label] of USE_CASE_MAP) {
+    if (keywords.some((kw) => lower.includes(kw))) return label
+  }
+  return null
+}
+
+function ContextCard({
+  ctx,
+  onChange,
+}: {
+  ctx: UserContext
+  onChange: (next: UserContext) => void
+}) {
+  const [expanded, setExpanded] = useState(false)
+  const [draft, setDraft] = useState(ctx)
+
+  const hasContent = ctx.budget || ctx.useCase
+
+  function save() {
+    onChange(draft)
+    setExpanded(false)
+  }
+
+  if (!expanded) {
+    return (
+      <div
+        style={{
+          padding: '8px 20px',
+          borderTop: '1.5px solid var(--border)',
+          background: 'var(--bg)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: 8,
+          minHeight: 40,
+        }}
+      >
+        <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>
+          {hasContent ? (
+            <>
+              <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>目前需求：</span>
+              {ctx.budget && <span>{ctx.budget}</span>}
+              {ctx.budget && ctx.useCase && <span style={{ margin: '0 6px', color: 'var(--border)' }}>·</span>}
+              {ctx.useCase && <span>用途：{ctx.useCase}</span>}
+            </>
+          ) : (
+            <span style={{ color: 'var(--text-tertiary)' }}>目前需求：尚未偵測（可手動填寫）</span>
+          )}
+        </span>
+        <button
+          onClick={() => { setDraft(ctx); setExpanded(true) }}
+          style={{
+            fontSize: 11,
+            padding: '3px 10px',
+            border: '1.5px solid var(--border)',
+            background: 'transparent',
+            color: 'var(--text-secondary)',
+            flexShrink: 0,
+          }}
+        >
+          編輯
+        </button>
+      </div>
+    )
+  }
+
+  return (
+    <div
+      style={{
+        padding: '12px 20px',
+        borderTop: '1.5px solid var(--border)',
+        background: 'var(--bg)',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 10,
+      }}
+    >
+      <p style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 2 }}>
+        目前需求
+      </p>
+      <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+        <div style={{ flex: 1, minWidth: 120 }}>
+          <label style={{ display: 'block', fontSize: 11, color: 'var(--text-tertiary)', marginBottom: 4 }}>
+            預算
+          </label>
+          <input
+            type="text"
+            value={draft.budget}
+            onChange={(e) => setDraft((d) => ({ ...d, budget: e.target.value }))}
+            placeholder="例：NT$30,000"
+            style={{ width: '100%', fontSize: 13 }}
+          />
+        </div>
+        <div style={{ flex: 1, minWidth: 120 }}>
+          <label style={{ display: 'block', fontSize: 11, color: 'var(--text-tertiary)', marginBottom: 4 }}>
+            用途
+          </label>
+          <input
+            type="text"
+            value={draft.useCase}
+            onChange={(e) => setDraft((d) => ({ ...d, useCase: e.target.value }))}
+            placeholder="例：遊戲、剪片、學生"
+            style={{ width: '100%', fontSize: 13 }}
+          />
+        </div>
+      </div>
+      <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+        <button
+          onClick={() => setExpanded(false)}
+          style={{ fontSize: 12, padding: '4px 14px', border: '1.5px solid var(--border)', background: 'transparent' }}
+        >
+          取消
+        </button>
+        <button
+          onClick={save}
+          style={{ fontSize: 12, padding: '4px 14px', background: 'var(--accent)', color: '#fff', border: 'none', fontWeight: 600 }}
+        >
+          儲存
+        </button>
+      </div>
+    </div>
+  )
+}
+
 // ── Main Page ──────────────────────────────────────────────────────────────
 
 export default function Home() {
@@ -504,6 +662,7 @@ export default function Home() {
   const [ticketId, setTicketId] = useState('')
   const [ticketName, setTicketName] = useState('')
   const [ticketTopic, setTicketTopic] = useState('')
+  const [userCtx, setUserCtx] = useState<UserContext>({ budget: '', useCase: '' })
   const chatRef = useRef<HTMLDivElement>(null)
 
   // Greeting on mount
@@ -538,6 +697,13 @@ export default function Home() {
 
     const userMsg: Message = { id: crypto.randomUUID(), role: 'user', content: clean }
 
+    // Auto-detect budget / use case from user message
+    setUserCtx((prev) => {
+      const nextBudget = !prev.budget ? (detectBudget(clean) ?? '') : prev.budget
+      const nextUseCase = !prev.useCase ? (detectUseCase(clean) ?? '') : prev.useCase
+      return { budget: nextBudget, useCase: nextUseCase }
+    })
+
     // Off-topic guard (client-side fast path)
     if (isOffTopic(clean)) {
       const reply =
@@ -557,7 +723,7 @@ export default function Home() {
     setMessages((prev) => [...prev, userMsg])
     setLoading(true)
 
-    // Build history for Ollama (last 10 turns)
+    // Build history (last 10 turns)
     const history = [...messages.slice(-10), userMsg].map((m) => ({
       role: m.role,
       content: m.content,
@@ -567,7 +733,10 @@ export default function Home() {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: history }),
+        body: JSON.stringify({
+          messages: history,
+          userContext: userCtx,
+        }),
       })
 
       if (!res.ok) {
@@ -828,6 +997,9 @@ export default function Home() {
               </button>
             ))}
           </div>
+
+          {/* Needs context card */}
+          <ContextCard ctx={userCtx} onChange={setUserCtx} />
 
           {/* Input row */}
           <div

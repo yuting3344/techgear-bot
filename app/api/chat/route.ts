@@ -31,7 +31,16 @@ export async function POST(req: NextRequest) {
     )
   }
 
-  const { messages } = await req.json()
+  const { messages, userContext } = await req.json()
+
+  // Build system prompt, injecting user context if available
+  let systemPrompt = SYSTEM_PROMPT
+  if (userContext?.budget || userContext?.useCase) {
+    const parts = []
+    if (userContext.budget) parts.push(`預算：${userContext.budget}`)
+    if (userContext.useCase) parts.push(`用途：${userContext.useCase}`)
+    systemPrompt += `\n\n用戶目前需求（請優先根據此推薦）：${parts.join('，')}`
+  }
 
   // Convert messages to Gemini format
   const contents = messages.map((m: { role: string; content: string }) => ({
@@ -47,7 +56,7 @@ export async function POST(req: NextRequest) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+          system_instruction: { parts: [{ text: systemPrompt }] },
           contents,
           generationConfig: { maxOutputTokens: 1024, temperature: 0.7 },
         }),
