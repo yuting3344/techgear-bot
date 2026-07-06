@@ -15,7 +15,9 @@ export interface Laptop {
     gpu?: string
   }
   tags: string[]
+  tagsEn: string[]
   description: string
+  descriptionEn: string
   amazonUrl: string
   amazonAsin: string
   imageUrl: string
@@ -38,7 +40,9 @@ export const laptops: Laptop[] = [
       weight: '1.24 kg',
     },
     tags: ['輕薄', '長續航', '創作'],
+    tagsEn: ['Lightweight', 'Long Battery Life', 'Creative'],
     description: '搭載 M2 晶片，業界最長 18 小時續航，重量僅 1.24 kg，是出差與創作者首選。',
+    descriptionEn: 'Powered by the M2 chip with an industry-leading 18-hour battery life and a weight of just 1.24 kg — the top pick for business travel and creators.',
     amazonUrl: 'https://www.amazon.com/dp/B0B3BVWJ6Y',
     amazonAsin: 'B0B3BVWJ6Y',
     imageUrl: '/images/macbook-air-m2.jpg',
@@ -60,7 +64,9 @@ export const laptops: Laptop[] = [
       gpu: 'NVIDIA GeForce RTX 4060',
     },
     tags: ['影像剪輯', '高效能', '4K'],
+    tagsEn: ['Video Editing', 'High Performance', '4K'],
     description: 'RTX 4060 獨顯，13 代 i7，適合影像剪輯、3D 設計與重度辦公需求。',
+    descriptionEn: 'Dedicated RTX 4060 GPU with a 13th-gen i7 — great for video editing, 3D design, and heavy productivity work.',
     amazonUrl: 'https://www.amazon.com/dp/B0CC2566C5',
     amazonAsin: 'B0CC2566C5',
     imageUrl: '/images/dell-xps-15.jpg',
@@ -81,7 +87,9 @@ export const laptops: Laptop[] = [
       weight: '1.12 kg',
     },
     tags: ['商務', '輕薄', '鍵盤舒適'],
+    tagsEn: ['Business', 'Lightweight', 'Great Keyboard'],
     description: '經典商務機皇，1.12 kg 超輕機身，鍵盤手感頂級，MIL-SPEC 軍規認證。',
+    descriptionEn: 'A classic business flagship — ultra-light 1.12 kg body, top-tier keyboard feel, and MIL-SPEC durability certification.',
     amazonUrl: 'https://www.amazon.com/dp/B09MRBWXTQ',
     amazonAsin: 'B09MRBWXTQ',
     imageUrl: '/images/thinkpad-x1.png',
@@ -103,7 +111,9 @@ export const laptops: Laptop[] = [
       gpu: 'NVIDIA GeForce RTX 4070',
     },
     tags: ['遊戲', 'OLED', '高刷新率'],
+    tagsEn: ['Gaming', 'OLED', 'High Refresh Rate'],
     description: '240Hz OLED 螢幕，RTX 4070，Core Ultra 9，兼顧遊戲效能與輕薄設計。',
+    descriptionEn: '240Hz OLED display, RTX 4070, and Core Ultra 9 — balancing gaming performance with a slim design.',
     amazonUrl: 'https://www.amazon.com/dp/B0D7MGD2BF',
     amazonAsin: 'B0D7MGD2BF',
     imageUrl: '/images/gaming-laptop.jpg',
@@ -124,7 +134,9 @@ export const laptops: Laptop[] = [
       weight: '2.19 kg',
     },
     tags: ['翻轉', '觸控', '附手寫筆'],
+    tagsEn: ['Convertible', 'Touchscreen', 'Stylus Included'],
     description: '3K+ 觸控螢幕，可 360 度翻轉，附 OMEN Stylus 手寫筆，兼顧創作與商務。',
+    descriptionEn: '3K+ touchscreen with 360-degree flip, includes an OMEN Stylus pen — great for both creative work and business.',
     amazonUrl: 'https://www.amazon.com/dp/B0BFBJYLB5',
     amazonAsin: 'B0BFBJYLB5',
     imageUrl: '/images/hp-spectre-x360.jpg',
